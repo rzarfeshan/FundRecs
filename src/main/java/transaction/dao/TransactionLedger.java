@@ -1,15 +1,11 @@
 package transaction.dao;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.json.JSONArray;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -20,10 +16,9 @@ import transaction.Model.TransactionBean;
 @Component
 public class TransactionLedger {
 
-	private static FileWriter file;
 	final String transactionAlreadyExistsEvent = "Transaction with Date and Type already exists";
 
-	public void save(List<TransactionBean> listTransactionBean) {
+	public void save(List<TransactionBean> listTransactionBean) throws IOException {
 		TreeSet<TransactionBean> currentCache = TransactionApplication.getCacheTransaction();
 
 		for (TransactionBean bean : listTransactionBean) {
@@ -45,7 +40,7 @@ public class TransactionLedger {
 			System.out.println("Successfully Copied JSON Object to File...");
 
 		} catch (IOException e) {
-			throw new RuntimeException(e.getLocalizedMessage());
+			throw new IOException(e.getLocalizedMessage());
 		}
 	}
 
@@ -62,14 +57,15 @@ public class TransactionLedger {
 		return beans;
 	}
 	
-	private void writeEventLog(TransactionBean oldBean, TransactionBean newBean) {
+	private void writeEventLog(TransactionBean oldBean, TransactionBean newBean) throws IOException {
 		try (BufferedWriter br = new BufferedWriter(new FileWriter("./src/main/resources/EventHistory.txt", true))) {
 			br.append(transactionAlreadyExistsEvent + ", OLD transaction: " + oldBean.toString() + 
 					", New Transaction: " + newBean.toString());
+			br.newLine();
 			System.out.println("Event Written Successfully");
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new IOException(e.getLocalizedMessage());
 		}
 	}
 }

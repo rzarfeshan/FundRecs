@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 
 public class DateValidatorDateTimeFormatter {
-	public static boolean isValid(final String date) {
+	public boolean isValid(final String date) {
 
         boolean valid = false;
 

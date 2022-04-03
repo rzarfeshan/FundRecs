@@ -1,20 +1,18 @@
 package transaction.Model;
 
 import java.text.DecimalFormat;
+import java.time.format.DateTimeParseException;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import transaction.Model.util.DateValidatorDateTimeFormatter;
 
 public class TransactionBean implements Comparable<TransactionBean> {
 	
-	@NotNull(message = "Transaction Date must not be empty")
+	@NotNull(message = "Transaction Date must not be empty and should be in valid date format i.e. dd-mm-yyyy")
 	String date;
 	
 	@NotNull(message = "Transaction type must not be empty")
@@ -26,13 +24,10 @@ public class TransactionBean implements Comparable<TransactionBean> {
 		return date;
 	}
 
-	public void setDate(String date) throws JsonProcessingException {
+	public void setDate(String date) throws DateTimeParseException {
 		//check if date is valid or not
 		if (new DateValidatorDateTimeFormatter().isValid(date))
 			this.date = date;
-		else
-			throw new JsonProcessingException("Not a valid date: " + date) {};
-		
 	}
 
 	public String getType() {
